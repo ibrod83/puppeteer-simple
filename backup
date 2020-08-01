@@ -1,0 +1,85 @@
+import puppeteer from 'puppeteer';
+
+
+export default class Page {
+    context!: puppeteer.Page;//Will be assigned in init()
+    url: string;
+    constructor(url: string) {
+        this.url = url;
+
+    }////
+    async init() {
+        const browser = await puppeteer.launch({
+            headless: false,
+        });
+        const page = await browser.newPage();
+        this.context = page;
+        await page.goto(this.url, {
+            waitUntil: 'domcontentloaded'
+        });
+    }
+
+    screenshot(path: string) {
+        this.context.screenshot({ path });
+    }
+
+    repeatOperation(operation: Function, { numRepetitions = 1, delay = 0 }: { numRepetitions?: number, delay?: number }) {
+        // console.log('numrepetitions', numRepetitions, delay)
+        return (...args: any) => {
+            let counter = 0;
+            return new Promise(async(resolve) => {
+                if (numRepetitions>1) {
+                    const interval = setInterval(async () => {
+
+                        counter++;
+                        // console.log(operation)    
+                        await operation(...args);
+                        if (numRepetitions - counter == 0) {
+                            clearInterval(interval)
+                            await this.createDelay(delay);
+                            resolve();
+                        }
+                    }, delay);
+                }else{
+                    await operation(...args);
+                }
+
+            })
+        }
+
+    }
+
+    async click(selector: string, config?: { numRepetitions?: number, delay?: number }) {
+        await this.repeatOperation(() => {
+            this._click(selector)
+        }, { numRepetitions: config?.numRepetitions, delay: config?.delay })();
+    }
+
+    async scrollToBottom(config?: { numRepetitions: number, delay: number }) {
+        await this.repeatOperation(() => {
+            this._scrollToBottom()
+        }, { numRepetitions: config?.numRepetitions, delay: config?.delay })();
+    }
+
+
+    private async _click(selector: string) {
+        // console.log('clicking!', selector)
+        await this.context.click(selector)//
+    }
+    private async _scrollToBottom() {
+        await this.context.evaluate(() => {
+            window.scrollTo(0, document.body.scrollHeight);
+
+        })
+    }
+
+
+    async createDelay(mil: number) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve();
+            }, mil)
+        })
+    }
+}
+

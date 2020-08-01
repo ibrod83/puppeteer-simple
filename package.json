@@ -1,0 +1,19 @@
+{
+  "name": "puppeteer-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "concurrently \"nodemon --enable-source-maps ./build/clientCode.js\" \"tsc --watch\"",
+    "start": "concurrently \"node ./build/clientCode.js\" \"tsc \"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/puppeteer": "^3.0.1"
+  }
+}
