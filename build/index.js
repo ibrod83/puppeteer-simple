@@ -1,4 +1,6 @@
 "use strict";
+// declare module "nodejs-file-downloader" {}
+// declare var Downloader: any;
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -46,6 +48,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var puppeteer_1 = __importDefault(require("puppeteer"));
+var repeat_promise_until_resolved_1 = __importDefault(require("repeat-promise-until-resolved"));
+// import Downloader from 'nodejs-file-downloader'
+// import axios from 'axios';
+// const repeatPromiseUntilResolved = require('repeat-promise-until-resolved');
 var Page = /** @class */ (function () {
     function Page(url) {
         this.url = url;
@@ -68,6 +74,18 @@ var Page = /** @class */ (function () {
                                 waitUntil: 'domcontentloaded'
                             })];
                     case 3:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Page.prototype.waitTime = function (mil) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, createDelay(mil)];
+                    case 1:
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -103,18 +121,18 @@ var Page = /** @class */ (function () {
             });
         });
     };
-    Page.prototype.fillInputElement = function (querySelector, text) {
+    Page.prototype.openLink = function (selector) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.context.evaluate(function (querySelector, text) {
-                            var elem = document.querySelector(querySelector);
-                            console.log(querySelector, text);
-                            if (elem) {
-                                elem.value = text;
-                            }
-                        }, querySelector, text)];
+                    case 0: 
+                    // debugger;
+                    return [4 /*yield*/, Promise.all([
+                            this.context.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+                            this._click(selector)
+                        ])];
                     case 1:
+                        // debugger;
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -129,27 +147,35 @@ var Page = /** @class */ (function () {
             });
         });
     };
-    // async focusField(){
-    //     await page.evaluate(() => {
-    //         const email = document.querySelector('#email');
-    //         email.value = 'test@example.com';
-    //       });
-    // }
-    // async runJS(code:Function){
-    //     await this.context.evaluate(() => {
-    //        code()
-    //     },code)
-    // }
-    Page.prototype._click = function (selector) {
+    Page.prototype._click = function (querySelector) {
         return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        // console.log('clicking!', selector)
-                        debugger;
-                        return [4 /*yield*/, this.context.click(selector)]; //
+                    case 0: //
+                    return [4 /*yield*/, repeat_promise_until_resolved_1.default(function () { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4 /*yield*/, this.context.evaluate(function (querySelector, text) {
+                                            var elem = document.querySelector(querySelector);
+                                            // console.log(querySelector, text)
+                                            if (elem) {
+                                                elem.click();
+                                            }
+                                        }, querySelector)];
+                                    case 1:
+                                        _a.sent();
+                                        return [2 /*return*/];
+                                }
+                            });
+                        }); }, {
+                            maxAttempts: 4, delay: 1000,
+                            onError: function (e) {
+                                console.log('error from repeat:', e);
+                            }
+                        })];
                     case 1:
-                        _a.sent(); //
+                        _a.sent();
                         return [2 /*return*/];
                 }
             });
@@ -161,6 +187,7 @@ var Page = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.context.evaluate(function () {
                             window.scrollTo(0, document.body.scrollHeight);
+                            console.log('scrolled!');
                         })];
                     case 1:
                         _a.sent();
@@ -170,18 +197,21 @@ var Page = /** @class */ (function () {
         });
     };
     __decorate([
-        repeatable
+        withInterval
     ], Page.prototype, "click", null);
     __decorate([
-        repeatable
+        withInterval
     ], Page.prototype, "scrollToBottom", null);
     return Page;
 }());
 exports.default = Page;
-function repeatable(target, propertyKey, descriptor) {
-    // console.log(descriptor.value)
-    var originalMethod = descriptor.value;
-    // console.log(originalMethod)
+/**
+ * A decorator that adds self-repetition functionality to methods. It assumes that one of the arguments of the methods
+ * Contains an object, with "numRepetitions" and "delay" properties.
+ * Note that this has nothing to do with "repeatPromiseUntilResolved", which repeats operations that failed(an exception was thrown).
+ */
+function withInterval(target, propertyKey, descriptor) {
+    var originalMethod = descriptor.value; //The original decorated method.
     descriptor.value = function () {
         var _this = this;
         var args = [];
@@ -189,61 +219,70 @@ function repeatable(target, propertyKey, descriptor) {
             args[_i] = arguments[_i];
         }
         debugger;
-        var config = typeof args[0] === 'object' ? args[0] : args[1];
+        var config = getConfigObjectFromArgs(args); //Being that the config object argument of a decorated methods can be in any order,
+        //the appropriate argument needs to be extracted.
         var numRepetitions = (config === null || config === void 0 ? void 0 : config.numRepetitions) ? config.numRepetitions : 1;
         var delay = (config === null || config === void 0 ? void 0 : config.delay) ? config.delay : 0;
-        // console.log('args0', args[0])
-        // console.log(numRepetitions, delay)
         return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
             var counter, interval_1;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        counter = 0;
-                        if (!(numRepetitions > 1)) return [3 /*break*/, 1];
-                        interval_1 = setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        counter++;
-                                        // console.log(operation)    
-                                        return [4 /*yield*/, originalMethod.apply(this, args)];
-                                    case 1:
-                                        // console.log(operation)    
-                                        _a.sent();
-                                        if (!(numRepetitions - counter == 0)) return [3 /*break*/, 3];
-                                        clearInterval(interval_1);
-                                        return [4 /*yield*/, createDelay(delay)];
-                                    case 2:
-                                        _a.sent();
-                                        resolve();
-                                        _a.label = 3;
-                                    case 3: return [2 /*return*/];
-                                }
-                            });
-                        }); }, delay);
-                        return [3 /*break*/, 3];
-                    case 1: return [4 /*yield*/, originalMethod.apply(this, args)];
+                    case 0: //
+                    return [4 /*yield*/, originalMethod.apply(this, args)];
+                    case 1:
+                        _a.sent(); //Execute the original method initially without any interval.
+                        return [4 /*yield*/, createDelay(delay)];
                     case 2:
-                        _a.sent();
-                        resolve();
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                        _a.sent(); //Create the delay.
+                        counter = 1;
+                        if (numRepetitions > 1) { //If more than one execution was selected, create an interval(and begin from 1).
+                            interval_1 = setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            counter++;
+                                            return [4 /*yield*/, originalMethod.apply(this, args)];
+                                        case 1:
+                                            _a.sent();
+                                            if (!(numRepetitions - counter == 0)) return [3 /*break*/, 3];
+                                            clearInterval(interval_1);
+                                            return [4 /*yield*/, createDelay(delay)];
+                                        case 2:
+                                            _a.sent(); //Create the final delay, after all iterations are complete.
+                                            resolve();
+                                            _a.label = 3;
+                                        case 3: return [2 /*return*/];
+                                    }
+                                });
+                            }); }, delay);
+                        }
+                        else { //If it's a single execution, resolve immediately after the first execution. 
+                            resolve();
+                        }
+                        return [2 /*return*/];
                 }
             });
         }); });
     };
-    function createDelay(mil) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
-                        setTimeout(function () {
-                            resolve();
-                        }, mil);
-                    })];
-            });
+}
+function createDelay(mil) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    setTimeout(function () {
+                        resolve();
+                    }, mil);
+                })];
         });
+    });
+}
+function getConfigObjectFromArgs(args) {
+    for (var _i = 0, args_1 = args; _i < args_1.length; _i++) {
+        var arg = args_1[_i];
+        if (typeof arg === 'object') {
+            return arg;
+        }
     }
 }
 // repeatOperation(operation: Function, { numRepetitions = 1, delay = 0 }: { numRepetitions?: number, delay?: number }) {

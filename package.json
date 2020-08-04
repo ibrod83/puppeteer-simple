@@ -11,7 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "puppeteer": "^5.2.0"
+    "@types/cheerio": "^0.22.21",
+    "cheerio": "^1.0.0-rc.3",
+    "puppeteer": "^5.2.0",
+    "repeat-promise-until-resolved": "^1.0.6"
   },
   "devDependencies": {
     "@types/puppeteer": "^3.0.1"
