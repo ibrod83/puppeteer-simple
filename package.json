@@ -1,8 +1,9 @@
 {
-  "name": "puppeteer-test",
+  "name": "puppeteer-simple",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
   "scripts": {
     "watch": "concurrently \"nodemon --enable-source-maps ./build/clientCode.js\" \"tsc --watch\"",
     "start": "concurrently \"node ./build/clientCode.js\" \"tsc \"",
@@ -11,10 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/cheerio": "^0.22.21",
-    "cheerio": "^1.0.0-rc.3",
     "puppeteer": "^5.2.0",
-    "repeat-promise-until-resolved": "^1.0.6"
+    "repeat-promise-until-resolved": "^1.0.9"
   },
   "devDependencies": {
     "@types/puppeteer": "^3.0.1"

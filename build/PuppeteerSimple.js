@@ -35,23 +35,60 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var Selector = /** @class */ (function () {
-    function Selector(context) {
-        this.context = context;
+exports.PuppeteerSimple = void 0;
+var puppeteer_1 = __importDefault(require("puppeteer"));
+var Page_1 = __importDefault(require("./Page"));
+var PuppeteerSimple = /** @class */ (function () {
+    function PuppeteerSimple() {
     }
-    Selector.prototype.$ = function (querySelector) {
+    // constructor(public name:string,age:number){
+    // }
+    PuppeteerSimple.prototype.createBrowser = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
+            var browser;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.context.evaluate(function (querySelector) { return __awaiter(_this, void 0, void 0, function () {
-                            var elem;
-                            return __generator(this, function (_a) {
-                                elem = document.querySelector(querySelector);
-                                return [2 /*return*/, elem];
-                            });
-                        }); }, querySelector)];
+                    case 0:
+                        if (!!this.browser) return [3 /*break*/, 2];
+                        return [4 /*yield*/, puppeteer_1.default.launch({
+                                headless: false,
+                            })];
+                    case 1:
+                        browser = _a.sent();
+                        this.browser = browser;
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PuppeteerSimple.prototype.createPage = function (url) {
+        return __awaiter(this, void 0, void 0, function () {
+            var page;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!!this.browser) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.createBrowser()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        page = new Page_1.default(this.browser, url);
+                        return [2 /*return*/, page];
+                }
+            });
+        });
+    };
+    PuppeteerSimple.prototype.close = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.browser.close()];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -59,7 +96,7 @@ var Selector = /** @class */ (function () {
             });
         });
     };
-    return Selector;
+    return PuppeteerSimple;
 }());
-exports.default = Selector;
-//# sourceMappingURL=Selector.js.map
+exports.PuppeteerSimple = PuppeteerSimple;
+//# sourceMappingURL=PuppeteerSimple.js.map

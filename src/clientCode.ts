@@ -1,12 +1,33 @@
-import Page from './index';
+import PuppeteerSimple from './';
 (async () => {
-    // const page = new Page('https://ibrod83.com/books/');
+    const puppeteerSimple =  new PuppeteerSimple(); 
+    // const page =await  puppeteerSimple.createPage('https://socketio-playground.ibrod83.com/');
+    // const page2 =await  puppeteerSimple.createPage('http://scraper-test.localhost/pagination/7');
+    const page2 = await puppeteerSimple.createPage('https://ibrod83.com/books/');
     // const page = new Page('https://twitter.com/realDonaldTrump?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor');
-    const page = new Page('https://socketio-playground.ibrod83.com/');
-    // const page = new Page('https://www.inn.co.il/');
+    // const page = new PuppeteerSimple('https://socketio-playground.ibrod83.com/');
+    // const page = new PuppeteerSimple('https://analytics.google.com/analytics/web/');
     // const page = new Page('https://github.com/ibrod83/nodejs-web-scraper');
-    await page.init();
+    // await page.init();
+    
+
     try {
+       const response =  await page2.navigate();
+        // const html = await page.getHtml();
+        debugger;
+        // console.log(html)
+        // await page.destroy();
+        console.log('done!')
+
+        // await page2.click('.bookCard')
+        
+        // const html2 = await page2.getHtml()//
+
+        // console.log(html2)
+        // await page.destroy();
+        // console.log('done!2')
+
+        
         // await page.scrollToBottom(4, 3000);
         // await page.repeatOperation(()=>{page.scrollToBottom()},4, 3000)();
         // await page.scrollToBottom({numRepetitions:15,delay:3000});
@@ -24,14 +45,14 @@ import Page from './index';
         // await page.wait(3000);
         
     //    await page.openLink('.category_selector a');//
-       await page.openLink('a[href="/online-playground"]');//
-       await page.waitTime(2000)
+    //    await page.openLink('a[href="/online-playground"]');//
+    //    await page.waitTime(2000)//
        
-       await page.click('button[title="Add configuration"]');//
+    //    await page.click('button[title="Add configuration"]');//
 
-       await page.waitTime(2000)
+    //    await page.waitTime(2000)
 
-       await page.click('button[tabindex="0"]');//
+    //    await page.click('button[tabindex="0"]');//
     //    await page.waitTime(2000)
 
     //    await page.openLink('a[href="/about"]');//
@@ -56,10 +77,20 @@ import Page from './index';
         // console.log('done clicking!')//
         // await page.createDelay(1000)
         // await page.screenshot({ path: 'example.png' });
-        await page.screenshot('./example.png');
+        // await page.screenshot('./example.png');
+        // await page2.screenshot('./example2.png');
+        // await page.waitTime(2000);
+        // await page.close();
+        // await page2.waitTime(2000)
+        await page2.close()
         console.log('all done')
     } catch (error) {
-        console.log(error)//
+        debugger;
+        console.log('error: ',error)//
+    }finally{
+        console.log('finally')
+        // page2.close()
+        // puppeteerSimple.close()//
     }
 
 

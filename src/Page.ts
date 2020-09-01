@@ -1,33 +1,51 @@
 
-
-// declare module "nodejs-file-downloader" {}
-// declare var Downloader: any;
-
-
-
 import puppeteer from 'puppeteer';
-import repeatPromiseUntilResolved from 'repeat-promise-until-resolved';
+ import repeatPromiseUntilResolved from 'repeat-promise-until-resolved';
 
-// import Downloader from 'nodejs-file-downloader'
-// import axios from 'axios';
-// const repeatPromiseUntilResolved = require('repeat-promise-until-resolved');
+
+export interface RepeatableConfig {
+    numRepetitions: number;
+    delay: number
+}
+
 
 export default class Page {
     context!: puppeteer.Page;//Will be assigned in init()
     url: string;
-    constructor(url: string) {
+    browser!: puppeteer.Browser;
+    constructor(browser: puppeteer.Browser, url: string) {
         this.url = url;
+        this.browser = browser;
 
     }////
-    async init() {
-        const browser = await puppeteer.launch({
-            headless: false,
-        });
-        const page = await browser.newPage();
+    async navigate(): Promise<puppeteer.Response | null> {
+
+        const page = await this.browser.newPage();
+
         this.context = page;
-        await page.goto(this.url, {
-            waitUntil: 'domcontentloaded'
-        });
+        try {
+            // throw new Error('fake error')
+            const response = await page.goto(this.url, {
+                waitUntil: 'networkidle0'
+                // waitUntil: "domcontentloaded"
+            });
+            // process.kill(1,1);//
+            return response;
+        } catch (error) {
+            // console.log('goto error',error)
+            // debugger;
+            throw error;
+        }
+
+
+    }
+
+    async close() {//
+
+        // await Promise.all([
+           await this.context.close()
+            // this.context.waitForNavigation({ waitUntil: 'networkidle0' })
+        // ])
     }
 
     async waitTime(mil: number) {
@@ -45,18 +63,26 @@ export default class Page {
         await this._click(selector);
     }
 
-    @withInterval
+    @withInterval//
     async scrollToBottom(config?: { numRepetitions: number, delay: number }) {
-        debugger;
+        // debugger;
         await this._scrollToBottom();
     }
 
-    
+    async getHtml() {//
+
+
+        const html = await this.context.evaluate(() => {
+            return document.querySelector('html')?.innerHTML;
+        })
+
+        return html;
+    }
 
     async openLink(selector: string) {
         // debugger;
         await Promise.all([
-            this.context.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+            this.context.waitForNavigation({ waitUntil: 'networkidle0' }),
             this._click(selector)
         ])
     }
@@ -68,13 +94,15 @@ export default class Page {
 
     private async _click(querySelector: string) {//
 
-
+        // debugger;
         await repeatPromiseUntilResolved(async () => {
             await this.context.evaluate((querySelector, text) => {
+                // debugger;
                 const elem = document.querySelector(querySelector) as HTMLInputElement;
                 // console.log(querySelector, text)
                 if (elem) {
-
+                    // debugger
+                    // alert('element!')
                     elem.click();
                 }
 
@@ -90,7 +118,7 @@ export default class Page {
     private async _scrollToBottom() {
         await this.context.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
-            console.log('scrolled!')
+            // console.log('scrolled!')
 
         })
     }
@@ -140,7 +168,7 @@ function withInterval(target: Object, propertyKey: string, descriptor: PropertyD
     const originalMethod = descriptor.value;//The original decorated method.
 
     descriptor.value = function (...args: any) {
-        debugger;
+        // debugger;
         const config = getConfigObjectFromArgs(args)//Being that the config object argument of a decorated methods can be in any order,
         //the appropriate argument needs to be extracted.
         const numRepetitions = config?.numRepetitions ? config.numRepetitions : 1;
@@ -178,10 +206,7 @@ async function createDelay(mil: number) {
     })
 }
 
-interface RepeatableConfig {
-    numRepetitions: number;
-    delay: number
-}
+
 
 function getConfigObjectFromArgs(args: []): RepeatableConfig | undefined {
     for (let arg of args) {
