@@ -132,9 +132,23 @@ var Page = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: 
                     // debugger;
+                    // await this.focus();
                     return [4 /*yield*/, this._scrollToBottom()];
                     case 1:
                         // debugger;
+                        // await this.focus();
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Page.prototype.focus = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.context.bringToFront()];
+                    case 1:
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -226,10 +240,11 @@ var Page = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.context.evaluate(function () {
+                    case 0: return [4 /*yield*/, this.context.evaluate(function (url) {
                             window.scrollTo(0, document.body.scrollHeight);
-                            // console.log('scrolled!')
-                        })];
+                        }, this.url)
+                        // console.log('scrolled!',this.url)
+                    ];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

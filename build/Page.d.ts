@@ -20,6 +20,7 @@ export default class Page {
         numRepetitions: number;
         delay: number;
     }): Promise<void>;
+    focus(): Promise<void>;
     getHtml(): Promise<string | undefined>;
     openLink(selector: string): Promise<void>;
     typeText(querySelector: string, text: string): Promise<void>;

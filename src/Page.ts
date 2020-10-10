@@ -66,12 +66,17 @@ export default class Page {
     @withInterval//
     async scrollToBottom(config?: { numRepetitions: number, delay: number }) {
         // debugger;
+        // await this.focus();
         await this._scrollToBottom();
+    }
+
+    async focus(){
+        await this.context.bringToFront();
     }
 
     async getHtml() {//
 
-
+        //
         const html = await this.context.evaluate(() => {
             return document.querySelector('html')?.innerHTML;
         })
@@ -118,9 +123,10 @@ export default class Page {
     private async _scrollToBottom() {
         await this.context.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
-            // console.log('scrolled!')
+            
 
         })
+        // console.log('scrolled!',this.url)
     }
 
     // async waitForNavigation(){
