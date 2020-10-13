@@ -7,7 +7,12 @@ export default class Page {
     context: puppeteer.Page;
     url: string;
     browser: puppeteer.Browser;
-    constructor(browser: puppeteer.Browser, url: string);
+    config: {
+        timeout: number;
+    };
+    constructor(browser: puppeteer.Browser, url: string, config?: {
+        timeout?: number;
+    });
     navigate(): Promise<puppeteer.Response | null>;
     close(): Promise<void>;
     waitTime(mil: number): Promise<void>;

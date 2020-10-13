@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -47,9 +58,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var repeat_promise_until_resolved_1 = __importDefault(require("repeat-promise-until-resolved"));
 var Page = /** @class */ (function () {
-    function Page(browser, url) {
+    function Page(browser, url, config) {
+        this.config = {
+            timeout: 30000
+        };
         this.url = url;
         this.browser = browser;
+        if (config) {
+            this.config = __assign(__assign({}, this.config), config);
+        }
     } ////
     Page.prototype.navigate = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -64,7 +81,8 @@ var Page = /** @class */ (function () {
                     case 2:
                         _a.trys.push([2, 4, , 5]);
                         return [4 /*yield*/, page.goto(this.url, {
-                                waitUntil: 'networkidle0'
+                                waitUntil: 'networkidle0',
+                                timeout: this.config.timeout
                                 // waitUntil: "domcontentloaded"
                             })];
                     case 3:
@@ -178,7 +196,7 @@ var Page = /** @class */ (function () {
                     case 0: 
                     // debugger;
                     return [4 /*yield*/, Promise.all([
-                            this.context.waitForNavigation({ waitUntil: 'networkidle0' }),
+                            this.context.waitForNavigation({ waitUntil: 'networkidle0', timeout: this.config.timeout }),
                             this._click(selector)
                         ])];
                     case 1:
@@ -225,7 +243,7 @@ var Page = /** @class */ (function () {
                         }); }, {
                             maxAttempts: 4, delay: 1000,
                             onError: function (e) {
-                                console.log('error from repeat:', e);
+                                // console.log('error from repeat:', e)
                             }
                         })];
                     case 1:
@@ -240,9 +258,9 @@ var Page = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.context.evaluate(function (url) {
+                    case 0: return [4 /*yield*/, this.context.evaluate(function () {
                             window.scrollTo(0, document.body.scrollHeight);
-                        }, this.url)
+                        })
                         // console.log('scrolled!',this.url)
                     ];
                     case 1:

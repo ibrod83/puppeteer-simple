@@ -5,20 +5,33 @@ import puppeteer from 'puppeteer';
 import Page from './Page';
 
 
+
 export class PuppeteerSimple {
+
+    // config:{ [index:string] : {showBrowser?:boolean} } = {
+
+    // };
+
+    config = {
+        headless:false,
+        timeout:30000        
+    }
 
     browser!: puppeteer.Browser;
 
-    // constructor(public name:string,age:number){
+    constructor(config?: { headless?: boolean  }) {
+        if (config) {
+            this.config = {...this.config,...config}
+        }
 
-    // }
+    }
 
 
 
     async createBrowser() {
         if (!this.browser) {
             const browser = await puppeteer.launch({
-                headless: false,
+                headless: this.config.headless,
             });
             this.browser = browser;
         }
@@ -29,7 +42,9 @@ export class PuppeteerSimple {
             await this.createBrowser();
         }
 
-        const page = new Page(this.browser, url)
+        const page = new Page(this.browser, url,{
+            timeout:this.config.timeout
+        })
         return page;
     }
 

@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -43,10 +54,17 @@ exports.PuppeteerSimple = void 0;
 var puppeteer_1 = __importDefault(require("puppeteer"));
 var Page_1 = __importDefault(require("./Page"));
 var PuppeteerSimple = /** @class */ (function () {
-    function PuppeteerSimple() {
+    function PuppeteerSimple(config) {
+        // config:{ [index:string] : {showBrowser?:boolean} } = {
+        // };
+        this.config = {
+            headless: false,
+            timeout: 30000
+        };
+        if (config) {
+            this.config = __assign(__assign({}, this.config), config);
+        }
     }
-    // constructor(public name:string,age:number){
-    // }
     PuppeteerSimple.prototype.createBrowser = function () {
         return __awaiter(this, void 0, void 0, function () {
             var browser;
@@ -55,7 +73,7 @@ var PuppeteerSimple = /** @class */ (function () {
                     case 0:
                         if (!!this.browser) return [3 /*break*/, 2];
                         return [4 /*yield*/, puppeteer_1.default.launch({
-                                headless: false,
+                                headless: this.config.headless,
                             })];
                     case 1:
                         browser = _a.sent();
@@ -78,7 +96,9 @@ var PuppeteerSimple = /** @class */ (function () {
                         _a.sent();
                         _a.label = 2;
                     case 2:
-                        page = new Page_1.default(this.browser, url);
+                        page = new Page_1.default(this.browser, url, {
+                            timeout: this.config.timeout
+                        });
                         return [2 /*return*/, page];
                 }
             });

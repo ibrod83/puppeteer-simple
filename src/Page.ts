@@ -1,6 +1,6 @@
 
 import puppeteer from 'puppeteer';
- import repeatPromiseUntilResolved from 'repeat-promise-until-resolved';
+import repeatPromiseUntilResolved from 'repeat-promise-until-resolved';
 
 
 export interface RepeatableConfig {
@@ -13,9 +13,15 @@ export default class Page {
     context!: puppeteer.Page;//Will be assigned in init()
     url: string;
     browser!: puppeteer.Browser;
-    constructor(browser: puppeteer.Browser, url: string) {
+    config = {
+        timeout: 30000
+    }
+    constructor(browser: puppeteer.Browser, url: string, config?: { timeout?: number }) {
         this.url = url;
         this.browser = browser;
+        if (config) {
+            this.config = { ...this.config, ...config }
+        }
 
     }////
     async navigate(): Promise<puppeteer.Response | null> {
@@ -24,9 +30,11 @@ export default class Page {
 
         this.context = page;
         try {
+            // console.log('timeout',this.config.timeout)
             // throw new Error('fake error')
             const response = await page.goto(this.url, {
-                waitUntil: 'networkidle0'
+                waitUntil: 'networkidle0',
+                timeout: this.config.timeout
                 // waitUntil: "domcontentloaded"
             });
             // process.kill(1,1);//
@@ -43,8 +51,8 @@ export default class Page {
     async close() {//
 
         // await Promise.all([
-           await this.context.close()
-            // this.context.waitForNavigation({ waitUntil: 'networkidle0' })
+        await this.context.close()
+        // this.context.waitForNavigation({ waitUntil: 'networkidle0' })
         // ])
     }
 
@@ -70,7 +78,7 @@ export default class Page {
         await this._scrollToBottom();
     }
 
-    async focus(){
+    async focus() {
         await this.context.bringToFront();
     }
 
@@ -87,7 +95,7 @@ export default class Page {
     async openLink(selector: string) {
         // debugger;
         await Promise.all([
-            this.context.waitForNavigation({ waitUntil: 'networkidle0' }),
+            this.context.waitForNavigation({ waitUntil: 'networkidle0', timeout: this.config.timeout }),
             this._click(selector)
         ])
     }
@@ -115,7 +123,7 @@ export default class Page {
         }, {
             maxAttempts: 4, delay: 1000,
             onError: (e: Error) => {
-                console.log('error from repeat:', e)
+                // console.log('error from repeat:', e)
             }
         })
 
@@ -123,7 +131,7 @@ export default class Page {
     private async _scrollToBottom() {
         await this.context.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
-            
+
 
         })
         // console.log('scrolled!',this.url)
