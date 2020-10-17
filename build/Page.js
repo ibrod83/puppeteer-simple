@@ -60,9 +60,11 @@ var repeat_promise_until_resolved_1 = __importDefault(require("repeat-promise-un
 var Page = /** @class */ (function () {
     function Page(browser, url, config) {
         this.config = {
-            timeout: 30000
+            timeout: 30000,
+            waitUntil: "networkidle0"
         };
         this.url = url;
+        // debugger;
         this.browser = browser;
         if (config) {
             this.config = __assign(__assign({}, this.config), config);
@@ -70,27 +72,28 @@ var Page = /** @class */ (function () {
     } ////
     Page.prototype.navigate = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var page, response, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var page, _a, waitUntil, timeout, response, error_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0: return [4 /*yield*/, this.browser.newPage()];
                     case 1:
-                        page = _a.sent();
+                        page = _b.sent();
+                        _a = this.config, waitUntil = _a.waitUntil, timeout = _a.timeout;
                         this.context = page;
-                        _a.label = 2;
+                        _b.label = 2;
                     case 2:
-                        _a.trys.push([2, 4, , 5]);
+                        _b.trys.push([2, 4, , 5]);
                         return [4 /*yield*/, page.goto(this.url, {
-                                waitUntil: 'networkidle0',
-                                timeout: this.config.timeout
+                                waitUntil: waitUntil,
+                                timeout: timeout
                                 // waitUntil: "domcontentloaded"
                             })];
                     case 3:
-                        response = _a.sent();
+                        response = _b.sent();
                         // process.kill(1,1);//
                         return [2 /*return*/, response];
                     case 4:
-                        error_1 = _a.sent();
+                        error_1 = _b.sent();
                         // console.log('goto error',error)
                         // debugger;
                         throw error_1;
@@ -191,16 +194,28 @@ var Page = /** @class */ (function () {
     };
     Page.prototype.openLink = function (selector) {
         return __awaiter(this, void 0, void 0, function () {
+            var _a, waitUntil, timeout;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = this.config, waitUntil = _a.waitUntil, timeout = _a.timeout;
+                        return [4 /*yield*/, Promise.all([
+                                this.context.waitForNavigation({ waitUntil: waitUntil, timeout: timeout }),
+                                this._click(selector)
+                            ])];
+                    case 1:
+                        _b.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Page.prototype.goBack = function () {
+        return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: 
-                    // debugger;
-                    return [4 /*yield*/, Promise.all([
-                            this.context.waitForNavigation({ waitUntil: 'networkidle0', timeout: this.config.timeout }),
-                            this._click(selector)
-                        ])];
+                    case 0: return [4 /*yield*/, this.context.goBack()];
                     case 1:
-                        // debugger;
                         _a.sent();
                         return [2 /*return*/];
                 }

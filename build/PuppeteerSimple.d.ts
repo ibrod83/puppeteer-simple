@@ -1,15 +1,17 @@
-import puppeteer from 'puppeteer';
+import puppeteer, { LoadEvent } from 'puppeteer';
 import Page from './Page';
 export declare class PuppeteerSimple {
     config: {
         headless: boolean;
-        timeout: number;
     };
     browser: puppeteer.Browser;
     constructor(config?: {
         headless?: boolean;
     });
     createBrowser(): Promise<void>;
-    createPage(url: string): Promise<Page>;
+    createPage(url: string, config: {
+        timeout: number;
+        waitUntil: LoadEvent;
+    }): Promise<Page>;
     close(): Promise<void>;
 }

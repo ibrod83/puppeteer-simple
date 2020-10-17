@@ -58,8 +58,8 @@ var PuppeteerSimple = /** @class */ (function () {
         // config:{ [index:string] : {showBrowser?:boolean} } = {
         // };
         this.config = {
+            // waitUntil,'networkidle0'
             headless: false,
-            timeout: 30000
         };
         if (config) {
             this.config = __assign(__assign({}, this.config), config);
@@ -84,7 +84,7 @@ var PuppeteerSimple = /** @class */ (function () {
             });
         });
     };
-    PuppeteerSimple.prototype.createPage = function (url) {
+    PuppeteerSimple.prototype.createPage = function (url, config) {
         return __awaiter(this, void 0, void 0, function () {
             var page;
             return __generator(this, function (_a) {
@@ -97,7 +97,8 @@ var PuppeteerSimple = /** @class */ (function () {
                         _a.label = 2;
                     case 2:
                         page = new Page_1.default(this.browser, url, {
-                            timeout: this.config.timeout
+                            timeout: config.timeout,
+                            waitUntil: config.waitUntil
                         });
                         return [2 /*return*/, page];
                 }

@@ -1,7 +1,7 @@
 
 
 
-import puppeteer from 'puppeteer';
+import puppeteer, { LoadEvent } from 'puppeteer';
 import Page from './Page';
 
 
@@ -13,8 +13,9 @@ export class PuppeteerSimple {
     // };
 
     config = {
+        // waitUntil,'networkidle0'
         headless:false,
-        timeout:30000        
+        // timeout:30000        
     }
 
     browser!: puppeteer.Browser;
@@ -37,13 +38,14 @@ export class PuppeteerSimple {
         }
     }
 
-    async createPage(url: string) {
+    async createPage(url: string,config:{timeout:number,waitUntil:LoadEvent}) {
         if (!this.browser) {
             await this.createBrowser();
         }
 
         const page = new Page(this.browser, url,{
-            timeout:this.config.timeout
+            timeout:config.timeout,
+            waitUntil:config.waitUntil
         })
         return page;
     }

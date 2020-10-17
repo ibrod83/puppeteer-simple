@@ -1,11 +1,12 @@
 {
   "name": "puppeteer-simple",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "",
   "main": "build/index.js",
   "typings": "build/index.d.ts",
   "scripts": {
     "watch": "concurrently \"nodemon --enable-source-maps ./build/index.js\" \"tsc --watch\"",
+    "clientCode": "concurrently \"nodemon --enable-source-maps ./build/clientCode.js\" \"tsc --watch\"",
     "start": "concurrently \"node ./build/clientCode.js\" \"tsc \"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

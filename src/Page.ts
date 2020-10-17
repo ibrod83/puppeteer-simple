@@ -1,5 +1,5 @@
 
-import puppeteer from 'puppeteer';
+import puppeteer, { LoadEvent } from 'puppeteer';
 import repeatPromiseUntilResolved from 'repeat-promise-until-resolved';
 
 
@@ -12,12 +12,14 @@ export interface RepeatableConfig {
 export default class Page {
     context!: puppeteer.Page;//Will be assigned in init()
     url: string;
-    browser!: puppeteer.Browser;
+    browser: puppeteer.Browser;
     config = {
-        timeout: 30000
+        timeout: 30000,
+        waitUntil:"networkidle0" as LoadEvent
     }
-    constructor(browser: puppeteer.Browser, url: string, config?: { timeout?: number }) {
+    constructor(browser: puppeteer.Browser, url: string, config?: { timeout?: number,waitUntil?:LoadEvent }) {
         this.url = url;
+        // debugger;
         this.browser = browser;
         if (config) {
             this.config = { ...this.config, ...config }
@@ -27,14 +29,15 @@ export default class Page {
     async navigate(): Promise<puppeteer.Response | null> {
 
         const page = await this.browser.newPage();
-
+        // debugger;
+        const {waitUntil,timeout} = this.config;
         this.context = page;
         try {
             // console.log('timeout',this.config.timeout)
             // throw new Error('fake error')
             const response = await page.goto(this.url, {
-                waitUntil: 'networkidle0',
-                timeout: this.config.timeout
+                waitUntil,
+                timeout
                 // waitUntil: "domcontentloaded"
             });
             // process.kill(1,1);//
@@ -94,10 +97,15 @@ export default class Page {
 
     async openLink(selector: string) {
         // debugger;
+        const {waitUntil,timeout} = this.config;
         await Promise.all([
-            this.context.waitForNavigation({ waitUntil: 'networkidle0', timeout: this.config.timeout }),
+            this.context.waitForNavigation({ waitUntil, timeout }),
             this._click(selector)
         ])
+    }
+
+    async goBack(){
+        await this.context.goBack();
     }
 
     async typeText(querySelector: string, text: string) {

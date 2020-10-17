@@ -41,133 +41,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var _1 = __importDefault(require("./"));
 (function () { return __awaiter(void 0, void 0, void 0, function () {
-    var puppeteerSimple, page2, response, error_1;
+    var puppeteerSimple, page, response, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 puppeteerSimple = new _1.default();
-                return [4 /*yield*/, puppeteerSimple.createPage('https://ibrod83.com/books/')];
+                return [4 /*yield*/, puppeteerSimple.createPage('https://www.instagram.com/realdonaldtrump/?hl=en', { timeout: 40000, waitUntil: 'networkidle0' })];
             case 1:
-                page2 = _a.sent();
+                page = _a.sent();
                 _a.label = 2;
             case 2:
-                _a.trys.push([2, 5, 6, 7]);
-                return [4 /*yield*/, page2.navigate()];
+                _a.trys.push([2, 6, 7, 8]);
+                return [4 /*yield*/, page.navigate()];
             case 3:
                 response = _a.sent();
+                return [4 /*yield*/, page.click('._7UhW9.xLCgt.qyrsm.h_zdq.uL8Hv.l4b0S')];
+            case 4:
+                _a.sent();
+                return [4 /*yield*/, page.scrollToBottom({ numRepetitions: 20, delay: 1500 })
+                    // const html = await page.getHtml();
+                ];
+            case 5:
+                _a.sent();
                 // const html = await page.getHtml();
                 debugger;
-                // console.log(html)
-                // await page.destroy();
                 console.log('done!');
-                // await page2.click('.bookCard')
-                // const html2 = await page2.getHtml()//
-                // console.log(html2)
-                // await page.destroy();
-                // console.log('done!2')
-                // await page.scrollToBottom(4, 3000);
-                // await page.repeatOperation(()=>{page.scrollToBottom()},4, 3000)();
-                // await page.scrollToBottom({numRepetitions:15,delay:3000});
-                // await page.runJS(()=>{
-                //     // if(window){
-                //     //   page.context.document.querySelector('body').style.backgroundColor = 'red';  
-                //     // }
-                //     alert('yoyo')
-                // })
-                // await page.click('.ui-autocomplete-input');
-                // console.log('clicked!')
-                // await page.typeText('.ui-autocomplete-input','ארבעה בתים');
-                // await page.wait(3000);
-                //    await page.openLink('.category_selector a');//
-                //    await page.openLink('a[href="/online-playground"]');//
-                //    await page.waitTime(2000)//
-                //    await page.click('button[title="Add configuration"]');//
-                //    await page.waitTime(2000)
-                //    await page.click('button[tabindex="0"]');//
-                //    await page.waitTime(2000)
-                //    await page.openLink('a[href="/about"]');//
-                //    await page.waitTime(2000)
-                //    await page.openLink('a[href="/more-from-the-author"]');//
-                // await page.openLink( 'a.ui-menu-item-wrapper');
-                // console.log('dropdown clicked!')
-                // await page.click('.add_to_cart')
-                // console.log('add to cart clicked!')
-                // await page.wait(2000);
-                // await page.click('.load_random_products');
-                // await page.click('.load_random_products',{numRepetitions:4,delay:3500});///
-                // console.log('done clicking!')//
-                // await page.createDelay(1000)
-                // await page.screenshot({ path: 'example.png' });
-                // await page.screenshot('./example.png');
-                // await page2.screenshot('./example2.png');
-                // await page.waitTime(2000);
-                // await page.close();
-                // await page2.waitTime(2000)
-                return [4 /*yield*/, page2.close()];
-            case 4:
-                // await page2.click('.bookCard')
-                // const html2 = await page2.getHtml()//
-                // console.log(html2)
-                // await page.destroy();
-                // console.log('done!2')
-                // await page.scrollToBottom(4, 3000);
-                // await page.repeatOperation(()=>{page.scrollToBottom()},4, 3000)();
-                // await page.scrollToBottom({numRepetitions:15,delay:3000});
-                // await page.runJS(()=>{
-                //     // if(window){
-                //     //   page.context.document.querySelector('body').style.backgroundColor = 'red';  
-                //     // }
-                //     alert('yoyo')
-                // })
-                // await page.click('.ui-autocomplete-input');
-                // console.log('clicked!')
-                // await page.typeText('.ui-autocomplete-input','ארבעה בתים');
-                // await page.wait(3000);
-                //    await page.openLink('.category_selector a');//
-                //    await page.openLink('a[href="/online-playground"]');//
-                //    await page.waitTime(2000)//
-                //    await page.click('button[title="Add configuration"]');//
-                //    await page.waitTime(2000)
-                //    await page.click('button[tabindex="0"]');//
-                //    await page.waitTime(2000)
-                //    await page.openLink('a[href="/about"]');//
-                //    await page.waitTime(2000)
-                //    await page.openLink('a[href="/more-from-the-author"]');//
-                // await page.openLink( 'a.ui-menu-item-wrapper');
-                // console.log('dropdown clicked!')
-                // await page.click('.add_to_cart')
-                // console.log('add to cart clicked!')
-                // await page.wait(2000);
-                // await page.click('.load_random_products');
-                // await page.click('.load_random_products',{numRepetitions:4,delay:3500});///
-                // console.log('done clicking!')//
-                // await page.createDelay(1000)
-                // await page.screenshot({ path: 'example.png' });
-                // await page.screenshot('./example.png');
-                // await page2.screenshot('./example2.png');
-                // await page.waitTime(2000);
-                // await page.close();
-                // await page2.waitTime(2000)
-                _a.sent();
+                // await page.openLink('.accordion.breadcrumb a')
+                // await createDelay(4000);
+                // page.goBack();
+                // await page.close()
                 console.log('all done');
-                return [3 /*break*/, 7];
-            case 5:
+                return [3 /*break*/, 8];
+            case 6:
                 error_1 = _a.sent();
                 debugger;
                 console.log('error: ', error_1); //
-                return [3 /*break*/, 7];
-            case 6:
+                return [3 /*break*/, 8];
+            case 7:
                 console.log('finally');
                 return [7 /*endfinally*/];
-            case 7: return [2 /*return*/];
+            case 8: return [2 /*return*/];
         }
     });
 }); })();
-// async function createDelay(mil: number) {
-//     return new Promise((resolve, reject) => {
-//         setTimeout(() => {
-//             resolve();
-//         }, mil)
-//     })
-// }
+function createDelay(mil) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    setTimeout(function () {
+                        resolve();
+                    }, mil);
+                })];
+        });
+    });
+}
 //# sourceMappingURL=clientCode.js.map
