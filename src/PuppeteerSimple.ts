@@ -5,6 +5,9 @@ import puppeteer, { LoadEvent } from 'puppeteer';
 import Page from './Page';
 
 
+type Config={//Any puppeteer config property will do
+    [index:string]:any
+}
 
 export class PuppeteerSimple {
 
@@ -20,7 +23,7 @@ export class PuppeteerSimple {
 
     browser!: puppeteer.Browser;
 
-    constructor(config?: { headless?: boolean  }) {
+    constructor(config?: Config) {
         if (config) {
             this.config = {...this.config,...config}
         }

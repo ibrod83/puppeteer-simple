@@ -196,7 +196,7 @@ function withInterval(target: Object, propertyKey: string, descriptor: PropertyD
         const numRepetitions = config?.numRepetitions ? config.numRepetitions : 1;
         const delay = config?.delay ? config.delay : 0;
 
-        return new Promise(async (resolve) => {//
+        return new Promise<void>(async (resolve) => {//
 
             await originalMethod.apply(this, args);//Execute the original method initially without any interval.
             await createDelay(delay);//Create the delay.
@@ -221,7 +221,7 @@ function withInterval(target: Object, propertyKey: string, descriptor: PropertyD
 
 
 async function createDelay(mil: number) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         setTimeout(() => {
             resolve();
         }, mil)
