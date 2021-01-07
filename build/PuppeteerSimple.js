@@ -72,9 +72,7 @@ var PuppeteerSimple = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!!this.browser) return [3 /*break*/, 2];
-                        return [4 /*yield*/, puppeteer_1.default.launch({
-                                headless: this.config.headless,
-                            })];
+                        return [4 /*yield*/, puppeteer_1.default.launch(this.config)];
                     case 1:
                         browser = _a.sent();
                         this.browser = browser;

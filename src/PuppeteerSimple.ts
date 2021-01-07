@@ -34,9 +34,8 @@ export class PuppeteerSimple {
 
     async createBrowser() {
         if (!this.browser) {
-            const browser = await puppeteer.launch({
-                headless: this.config.headless,
-            });
+            // console.log(this.config)
+            const browser = await puppeteer.launch(this.config);
             this.browser = browser;
         }
     }
